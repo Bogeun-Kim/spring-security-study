@@ -1,8 +1,9 @@
-package com.example.springsecurity.config;
+package com.example.springsecurity.dto;
 
 import com.example.springsecurity.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

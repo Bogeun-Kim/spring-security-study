@@ -13,3 +13,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+server:
+  servlet:
+    session:
+      timeout: ${SESSION_TIMEOUT}

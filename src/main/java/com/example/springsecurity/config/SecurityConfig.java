@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -46,12 +49,13 @@ public class SecurityConfig {
     // Spring Security 프레임워크에서 제공하는 User 클래스를 활용한다.
     @Bean
     public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user1")
+        UserDetails user = User.withUsername("user")
                 .password("{noop}12345").authorities("read") // authorities() : 특정 사용자가 가질 권한이나 접근 수준 설정
                 .roles("USER")
                 .build();
         UserDetails admin = User.withUsername("admin")
-                .password("{noop}54321").authorities("admin") // authorities() : 특정 사용자가 가질 권한이나 접근 수준 설정
+                // 54321
+                .password("$2a$12$zPxhbyaB60mpM9IqQL62suqYaePgTyENLnl.kZjoxkjx3ZMetwdge").authorities("admin") // authorities() : 특정 사용자가 가질 권한이나 접근 수준 설정
                 .roles("ADMIN")
                 .build();
         return new InMemoryUserDetailsManager(user, admin); // 애플레키에션 메모리 내에 사용자 세부 정보를 저장하려고 하므로 InMemoryUserDetailsManager를 생성하여 지금까지 생성하나 모든 UserDetails 객체를 전달한다.

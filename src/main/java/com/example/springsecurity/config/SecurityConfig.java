@@ -60,4 +60,9 @@ public class SecurityConfig {
                 .build();
         return new InMemoryUserDetailsManager(user, admin); // 애플레키에션 메모리 내에 사용자 세부 정보를 저장하려고 하므로 InMemoryUserDetailsManager를 생성하여 지금까지 생성하나 모든 UserDetails 객체를 전달한다.
     }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

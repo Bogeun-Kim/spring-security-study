@@ -8,14 +8,13 @@ import org.springframework.security.authentication.password.CompromisedPasswordC
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.password.HaveIBeenPwnedRestApiPasswordChecker;
+import javax.sql.DataSource;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration // 설정파일
@@ -46,20 +45,11 @@ public class SecurityConfig {
     }
 
     /* 사용자 계정 처리를 돕는 내부 메서드 */
-    // 새로운 사용자를 생성하거나 로그인 중 기존 사용자 정보를 가져온다.
-    // Spring Security 프레임워크에서 제공하는 User 클래스를 활용한다.
+    // JDBC를 이용하여 데이터베이스에서 사용자 정보를 관리
+    // DB의 연결 정보를 알게 됨
     @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user")
-                .password("{noop}12345").authorities("read") // authorities() : 특정 사용자가 가질 권한이나 접근 수준 설정
-                .roles("USER")
-                .build();
-        UserDetails admin = User.withUsername("admin")
-                // 54321
-                .password("$2a$12$zPxhbyaB60mpM9IqQL62suqYaePgTyENLnl.kZjoxkjx3ZMetwdge").authorities("admin") // authorities() : 특정 사용자가 가질 권한이나 접근 수준 설정
-                .roles("ADMIN")
-                .build();
-        return new InMemoryUserDetailsManager(user, admin); // 애플레키에션 메모리 내에 사용자 세부 정보를 저장하려고 하므로 InMemoryUserDetailsManager를 생성하여 지금까지 생성하나 모든 UserDetails 객체를 전달한다.
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean
